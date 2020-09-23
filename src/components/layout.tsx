@@ -253,7 +253,7 @@ const Layout = ({ children, color }: LayoutProps) => {
           <Footer color={color}>
             <Box p={[6, 6, 8]} fontSize={0}>
               恋爱在维橙 灵魂不将就<br />
-              Starter by Mr Liu.
+              ♡ Love in WeiCheng ♡
             </Box>
           </Footer>
         </Wrapper>
