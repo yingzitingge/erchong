@@ -1,70 +1,83 @@
-require(`dotenv`).config({
+require('dotenv').config({
   path: `.env`,
 })
 
+const config = require('./config')
+
+const pathPrefix = config.pathPrefix === '/' ? '' : config.pathPrefix
+
 module.exports = {
+  pathPrefix: config.pathPrefix,
   siteMetadata: {
-    siteTitleAlt: `Minimal Blog - Gatsby Theme`,
+    siteUrl: config.siteUrl + pathPrefix,
+    pathPrefix,
+    title: config.siteTitle,
+    titleAlt: config.siteTitleAlt,
+    description: config.siteDescription,
+    logo: config.siteLogo,
+    headline: config.siteHeadline,
+    siteLanguage: config.siteLanguage,
+    ogLanguage: config.ogLanguage,
+    author: config.author,
+    twitter: config.userTwitter,
+    facebook: config.ogSiteName,
   },
   plugins: [
+    'gatsby-plugin-react-helmet',
+    'gatsby-plugin-styled-components',
+    'gatsby-plugin-typescript',
+    'gatsby-transformer-yaml',
     {
-      resolve: `@lekoarts/gatsby-theme-minimal-blog`,
-      // See the theme's README for all available options
+      resolve: 'gatsby-source-filesystem',
       options: {
-        navigation: [
-          {
-            title: `Blog`,
-            slug: `/blog`,
-          },
-          {
-            title: `About`,
-            slug: `/about`,
-          },
-        ],
-        externalLinks: [
-          {
-            name: `Twitter`,
-            url: `https://twitter.com/lekoarts_de`,
-          },
-          {
-            name: `Instagram`,
-            url: `https://www.instagram.com/lekoarts.de/`,
-          },
-        ],
+        name: 'projects',
+        path: `${__dirname}/content/projects`,
       },
     },
     {
-      resolve: `gatsby-plugin-google-analytics`,
+      resolve: 'gatsby-source-filesystem',
       options: {
-        trackingId: process.env.GOOGLE_ANALYTICS_ID,
+        name: 'config',
+        path: `${__dirname}/config`,
       },
     },
-    `gatsby-plugin-sitemap`,
     {
-      resolve: `gatsby-plugin-manifest`,
+      resolve: 'gatsby-source-filesystem',
       options: {
-        name: `minimal-blog - @lekoarts/gatsby-theme-minimal-blog`,
-        short_name: `minimal-blog`,
-        description: `Typography driven, feature-rich blogging theme with minimal aesthetics. Includes tags/categories support and extensive features for code blocks such as live preview, line numbers, and code highlighting.`,
-        start_url: `/`,
-        background_color: `#fff`,
-        theme_color: `#6B46C1`,
-        display: `standalone`,
-        icons: [
-          {
-            src: `/android-chrome-192x192.png`,
-            sizes: `192x192`,
-            type: `image/png`,
-          },
-          {
-            src: `/android-chrome-512x512.png`,
-            sizes: `512x512`,
-            type: `image/png`,
-          },
-        ],
+        name: 'images',
+        path: `${__dirname}/src/images`,
       },
     },
-    `gatsby-plugin-offline`,
-    `gatsby-plugin-netlify`,
+    {
+      resolve: 'gatsby-source-instagram',
+      options: {
+        access_token: process.env.ACCESS_TOKEN,
+        instagram_id: process.env.BUSINESS_ID,
+      },
+    },
+    {
+      resolve: 'gatsby-plugin-google-analytics',
+      options: {
+        trackingId: config.googleAnalyticsID,
+      },
+    },
+    'gatsby-plugin-sharp',
+    'gatsby-transformer-sharp',
+    'gatsby-plugin-sitemap',
+    {
+      resolve: 'gatsby-plugin-manifest',
+      options: {
+        name: config.siteTitle,
+        short_name: config.siteTitleShort,
+        description: config.siteDescription,
+        start_url: config.pathPrefix,
+        background_color: config.backgroundColor,
+        theme_color: config.themeColor,
+        display: 'standalone',
+        icon: 'src/favicon.png',
+      },
+    },
+    'gatsby-plugin-offline',
+    'gatsby-plugin-netlify',
   ],
 }
